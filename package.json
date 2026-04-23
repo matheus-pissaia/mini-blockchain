@@ -7,14 +7,19 @@
         "node": "24.x"
     },
     "scripts": {
-        "start": "node src/index.ts",
+        "start": "node --import tsx src/index.ts",
+        "test": "node --import tsx --test src/crypto.test.ts src/blockchain.test.ts src/auth.test.ts",
         "typecheck": "npx tsc --noEmit"
     },
     "devDependencies": {
+        "@types/node": "^25.6.0",
+        "@types/qrcode-terminal": "^0.12.2",
+        "tsx": "^4.21.0",
         "typescript": "^6.0.3"
     },
     "dependencies": {
         "@inquirer/prompts": "^8.4.2",
-        "otplib": "^13.4.0"
+        "otplib": "^13.4.0",
+        "qrcode-terminal": "^0.12.0"
     }
 }
