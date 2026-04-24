@@ -16,12 +16,11 @@ describe('BlockchainService', () => {
     afterEach(() => Block.truncate())
 
     describe('#addBlock', () => {
-        it('should add a new block with encrypted data', () => {
+        it('should add a new block', () => {
             const block = BlockchainService.addBlock(session, data)
 
             assert.ok(block)
             assert.equal(block.owner, session.username)
-            assert.equal(block.tryDecryptBlockData(session.key), data)
         })
 
         it('should link subsequent block to previous hash', () => {
@@ -59,6 +58,25 @@ describe('BlockchainService', () => {
             const result = BlockchainService.validateChain(newBlock)
 
             assert.equal(result.valid, false)
+        })
+    })
+
+    describe('#tryDecryptBlock', () => {
+        it('owner can decrypt their block', () => {
+            const block = BlockchainService.addBlock(session, data)
+
+            assert.ok(block)
+            assert.equal(BlockchainService.tryDecryptBlockData(block, session.key), data)
+        })
+
+        it("wrong key cannot decrypt another user's block", () => {
+            const aliceSession = session
+            const bobSession = { username: 'bob', key: makeKey('bob') }
+
+            const block = BlockchainService.addBlock(aliceSession, data)
+
+            assert.ok(block)
+            assert.equal(BlockchainService.tryDecryptBlockData(block, bobSession.key), null)
         })
     })
 })

@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 import { BaseModel } from './BaseModel'
-import { EncryptedBlob, decrypt } from '~/utils/crypto'
+import { EncryptedBlob } from '~/utils/crypto'
 
 export class Block extends BaseModel {
     protected static readonly _DB_FILENAME = 'blocks.json'
@@ -36,17 +36,5 @@ export class Block extends BaseModel {
         this.height = Block.all().length
         this.timestamp = Date.now()
         this.hash = createHash('sha256').update(JSON.stringify(this)).digest('hex')
-    }
-
-    public tryDecryptBlockData(key: Buffer): string | null {
-        try {
-            return decrypt(key, {
-                iv: this.iv,
-                ciphertext: this.ciphertext,
-                tag: this.tag
-            })
-        } catch (e) {
-            return null
-        }
     }
 }

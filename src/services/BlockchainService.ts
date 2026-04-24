@@ -1,9 +1,15 @@
 import { Block } from '~/models/Block'
-import { encrypt } from '~/utils/crypto'
+import { decrypt, encrypt } from '~/utils/crypto'
 import { Session } from './AuthService'
 
 export class BlockchainService {
     public static GENESIS_BLOCK_PREV_HASH = '0'.repeat(64)
+
+    public static get lastBlock(): Block | null {
+        const allBlocks = Block.all()
+
+        return allBlocks.length ? allBlocks[allBlocks.length - 1] : null
+    }
 
     public static addBlock(session: Session, data: string) {
         const newBlock = Block.create({
@@ -39,9 +45,11 @@ export class BlockchainService {
         return { valid: true }
     }
 
-    public static get lastBlock(): Block | null {
-        const allBlocks = Block.all()
-
-        return allBlocks.length ? allBlocks[allBlocks.length - 1] : null
+    public static tryDecryptBlockData({ ciphertext, tag, iv }: Block, key: Buffer) {
+        try {
+            return decrypt(key, { iv, ciphertext, tag })
+        } catch (e) {
+            return null
+        }
     }
 }
