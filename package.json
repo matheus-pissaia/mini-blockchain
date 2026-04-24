@@ -8,7 +8,7 @@
     },
     "scripts": {
         "start": "node --import tsx src/index.ts",
-        "test": "node --import tsx --test src/crypto.test.ts src/blockchain.test.ts src/auth.test.ts",
+        "test": "node --import tsx --test src/*.test.ts src/**/*.test.ts",
         "typecheck": "npx tsc --noEmit"
     },
     "devDependencies": {
