@@ -15,7 +15,7 @@ export class BlockchainService {
         const newBlock = Block.create({
             owner: session.username,
             encryptedData: encrypt(session.key, data),
-            hash_prev: this.lastBlock?.hash || this.GENESIS_BLOCK_PREV_HASH
+            hashPrevious: this.lastBlock?.hash || this.GENESIS_BLOCK_PREV_HASH
         })
 
         const { valid, error } = this.validateChain(newBlock)
@@ -38,8 +38,8 @@ export class BlockchainService {
             const block = blocks[i]
             const expectedPrev = i === 0 ? this.GENESIS_BLOCK_PREV_HASH : blocks[i - 1].hash
 
-            if (block.hash_prev !== expectedPrev)
-                return { valid: false, error: `Block ${i}: hash_prev mismatch` }
+            if (block.hashPrevious !== expectedPrev)
+                return { valid: false, error: `Block ${i}: hashPrevious mismatch` }
         }
 
         return { valid: true }

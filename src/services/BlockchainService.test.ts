@@ -30,7 +30,7 @@ describe('BlockchainService', () => {
             assert.ok(b1)
             assert.ok(b2)
             assert.notEqual(b1.hash, b2.hash)
-            assert.equal(b2.hash_prev, b1.hash)
+            assert.equal(b2.hashPrevious, b1.hash)
         })
     })
 
@@ -52,7 +52,7 @@ describe('BlockchainService', () => {
             const newBlock = Block.create({
                 owner: session.username,
                 encryptedData: encrypt(session.key, data),
-                hash_prev: firstBlock.hash_prev, // Tampered previous hash
+                hashPrevious: firstBlock.hashPrevious, // Tampered previous hash
             })
 
             const result = BlockchainService.validateChain(newBlock)

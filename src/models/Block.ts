@@ -11,24 +11,24 @@ export class Block extends BaseModel {
     public readonly owner: string
     public readonly ciphertext: string
     public readonly hash: string
-    public readonly hash_prev: string
+    public readonly hashPrevious: string
     public readonly timestamp: number
 
     constructor(
         {
             owner,
-            hash_prev,
+            hashPrevious,
             encryptedData,
         }: {
             owner: string
-            hash_prev: string
+            hashPrevious: string
             encryptedData: EncryptedBlob
         }
     ) {
         super()
 
         this.owner = owner
-        this.hash_prev = hash_prev
+        this.hashPrevious = hashPrevious
         this.iv = encryptedData.iv
         this.tag = encryptedData.tag
         this.ciphertext = encryptedData.ciphertext

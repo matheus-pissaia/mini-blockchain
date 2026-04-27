@@ -42,7 +42,7 @@ src/
 
 - `AuthService` — handles user registration (generates a salt, derives a key via scrypt, encrypts the TOTP secret with that key, and stores a SHA-256 verifier of the key) and login (re-derives the key, verifies the password via the stored verifier, decrypts the TOTP secret, and validates the one-time code). On success it returns a `Session` carrying the derived key in memory.
 
-- `BlockchainService` — handles block creation (encrypts the payload with the session key, links to the previous block's hash, validates the chain before persisting) and chain validation (walks every block in order and asserts each `hash_prev` matches the hash of its predecessor).
+- `BlockchainService` — handles block creation (encrypts the payload with the session key, links to the previous block's hash, validates the chain before persisting) and chain validation (walks every block in order and asserts each `hashPrevious` matches the hash of its predecessor).
 
 **`utils/`** exposes the raw cryptographic building blocks used by both services: salt generation, key derivation, AES-GCM encrypt/decrypt, and SHA-256 hashing.
 
@@ -62,4 +62,4 @@ Each block's payload is encrypted with **AES-256-GCM**, an authenticated encrypt
 
 ### Blockchain chaining
 
-Each block stores `hash_prev`, the SHA-256 hash of the previous block's content. The very first block (genesis) uses a fixed 64-zero string as `hash_prev`. Because every block commits to the hash of its predecessor, altering any block invalidates the `hash_prev` of every subsequent block — the entire suffix of the chain becomes detectable as tampered. `BlockchainService.validateChain` enforces this by walking the full ordered list and asserting each `hash_prev` equals the computed hash of the block before it.
+Each block stores `hashPrevious`, the SHA-256 hash of the previous block's content. The very first block (genesis) uses a fixed 64-zero string as `hashPrevious`. Because every block commits to the hash of its predecessor, altering any block invalidates the `hashPrevious` of every subsequent block — the entire suffix of the chain becomes detectable as tampered. `BlockchainService.validateChain` enforces this by walking the full ordered list and asserting each `hashPrevious` equals the computed hash of the block before it.
