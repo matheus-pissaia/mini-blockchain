@@ -8,7 +8,7 @@
     },
     "scripts": {
         "start": "node --import tsx src/index.ts",
-        "test": "node --import tsx --test src/*.test.ts src/**/*.test.ts",
+        "test": "node --import tsx --test src/**/*.test.ts",
         "typecheck": "npx tsc --noEmit"
     },
     "devDependencies": {
