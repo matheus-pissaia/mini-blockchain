@@ -1,6 +1,6 @@
 # Mini Blockchain
 
-A multi-user mini blockchain where each user can securely register encrypted transactions. Built as a practical exercise in applied cryptography, covering TOTP-based 2FA, symmetric key derivation, authenticated block encryption, and blockchain integrity chaining.
+A terminal based multi-user mini blockchain where each user can securely register encrypted transactions. Built as a practical exercise in applied cryptography, covering TOTP-based 2FA, symmetric key derivation, authenticated block encryption, and blockchain integrity chaining.
 
 ---
 
