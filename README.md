@@ -40,7 +40,7 @@ src/
 
 **`services/`** contains the two main domain services:
 
-- `AuthService` — handles user registration (generates a salt, derives a key via scrypt, encrypts the TOTP secret with that key, and stores a SHA-256 verifier of the key) and login (re-derives the key, verifies the password via the stored verifier, decrypts the TOTP secret, and validates the one-time code). On success it returns a `Session` carrying the derived key in memory.
+- `AuthService` — handles user registration (generates a salt, derives a key via scrypt and encrypts the TOTP secret with that key) and login (re-derives the key, decrypts the TOTP secret with key and validates the one-time code). On success it returns a `Session` carrying the derived key in memory.
 
 - `BlockchainService` — handles block creation (encrypts the payload with the session key, links to the previous block's hash, validates the chain before persisting) and chain validation (walks every block in order and asserts each `hashPrevious` matches the hash of its predecessor).
 
@@ -54,7 +54,7 @@ TOTP produces a short-lived numeric code derived from a shared secret and the cu
 
 ### Symmetric key derivation (scrypt)
 
-Raw passwords are never stored or used as keys directly. Instead, `scrypt(password, salt, keyLen=32)` stretches the password into a 256-bit key. A unique random 32-byte salt is generated per user at registration and stored alongside the user record (salts are not secret — their purpose is to make pre-computed rainbow-table attacks infeasible). The same `(password, salt)` pair always yields the same key, so the key can be re-derived at login without storing it anywhere.
+Raw passwords are never stored or used as keys directly. Instead, `scrypt(password, salt, keyLen=32)` stretches the password into a 256-bit key using a unique random 32-byte salt, generated per user at registration (salts are not secret — their purpose is to make pre-computed rainbow-table attacks infeasible). The same `(password, salt)` pair always yields the same key, so the key can be re-derived at login without storing it anywhere.
 
 ### Block cipher — AES-256-GCM
 
