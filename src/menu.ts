@@ -56,7 +56,8 @@ function showMyBlocks(session: Session): void {
     console.log(`\nYour blocks (${myBlocks.length}):\n`)
 
     for (const block of myBlocks) {
-        const data = BlockchainService.tryDecryptBlockData(block, session.key) ?? '[decryption failed]'
+        const result = BlockchainService.decryptBlockData(block, session.key)
+        const data = result.valid ? result.data : '[decryption failed]'
         console.log(`  #${block.height} | ${new Date(block.timestamp).toISOString()} | ${data}`)
     }
 
@@ -72,9 +73,10 @@ function showFullChain(session: Session): void {
 
     for (const block of allBlocks) {
         const isOwn = block.owner === session.username
+        const result = BlockchainService.decryptBlockData(block, session.key)
 
         const data = isOwn
-            ? (BlockchainService.tryDecryptBlockData(block, session.key) ?? '[decryption failed]')
+            ? (result.valid ? result.data : '[decryption failed]')
             : '[encrypted]'
 
         const marker = isOwn ? '(yours)' : `(${block.owner})`

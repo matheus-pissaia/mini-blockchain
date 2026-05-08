@@ -6,6 +6,8 @@ export interface EncryptedBlob {
     ciphertext: string
 }
 
+type DecryptResult = { valid: true; data: string } | { valid: false; error: unknown }
+
 const SALT_LEN = 32
 const KEY_LEN = 32
 const IV_LEN = 12
@@ -16,10 +18,6 @@ export function generateSalt(): Buffer {
 
 export function deriveKey(password: string, salt: Buffer): Buffer {
     return scryptSync(password, salt, KEY_LEN)
-}
-
-export function sha256hex(data: Buffer): string {
-    return createHash('sha256').update(data).digest('hex')
 }
 
 export function encrypt(key: Buffer, plaintext: string): EncryptedBlob {
@@ -38,13 +36,20 @@ export function encrypt(key: Buffer, plaintext: string): EncryptedBlob {
     }
 }
 
-export function decrypt(key: Buffer, blob: EncryptedBlob): string {
-    const decipher = createDecipheriv('aes-256-gcm', key, Buffer.from(blob.iv, 'hex'))
+export function decrypt(key: Buffer, blob: EncryptedBlob): DecryptResult {
+    try {
+        const decipher = createDecipheriv('aes-256-gcm', key, Buffer.from(blob.iv, 'hex'))
 
-    decipher.setAuthTag(Buffer.from(blob.tag, 'hex'))
+        decipher.setAuthTag(Buffer.from(blob.tag, 'hex'))
 
-    return Buffer.concat([
-        decipher.update(Buffer.from(blob.ciphertext, 'hex')),
-        decipher.final(),
-    ]).toString('utf8')
+        return {
+            valid: true,
+            data: Buffer.concat([
+                decipher.update(Buffer.from(blob.ciphertext, 'hex')),
+                decipher.final()
+            ]).toString('utf8')
+        }
+    } catch (error) {
+        return { valid: false, error }
+    }
 }

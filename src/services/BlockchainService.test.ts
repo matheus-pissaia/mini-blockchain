@@ -61,22 +61,29 @@ describe('BlockchainService', () => {
         })
     })
 
-    describe('#tryDecryptBlock', () => {
-        it('owner can decrypt their block', () => {
+    describe('#decryptBlock', () => {
+        it('should decrypt own block', () => {
             const block = BlockchainService.addBlock(session, data)
 
             assert.ok(block)
-            assert.equal(BlockchainService.tryDecryptBlockData(block, session.key), data)
+
+            const decryptedBlockResult = BlockchainService.decryptBlockData(block, session.key)
+
+            assert.ok(decryptedBlockResult.valid)
+            assert.equal(decryptedBlockResult.data, data)
         })
 
-        it("wrong key cannot decrypt another user's block", () => {
+        it("should fail on other user's block", () => {
             const aliceSession = session
             const bobSession = { username: 'bob', key: makeKey('bob') }
 
             const block = BlockchainService.addBlock(aliceSession, data)
 
             assert.ok(block)
-            assert.equal(BlockchainService.tryDecryptBlockData(block, bobSession.key), null)
+
+            const result = BlockchainService.decryptBlockData(block, bobSession.key)
+
+            assert.equal(result.valid, false)
         })
     })
 })

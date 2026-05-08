@@ -45,11 +45,7 @@ export class BlockchainService {
         return { valid: true }
     }
 
-    public static tryDecryptBlockData({ ciphertext, tag, iv }: Block, key: Buffer) {
-        try {
-            return decrypt(key, { iv, ciphertext, tag })
-        } catch (e) {
-            return null
-        }
+    public static decryptBlockData({ ciphertext, tag, iv }: Block, key: Buffer) {
+        return decrypt(key, { iv, ciphertext, tag })
     }
 }
