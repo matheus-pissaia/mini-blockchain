@@ -1,4 +1,4 @@
-import { createHash, scryptSync, createCipheriv, createDecipheriv, randomBytes } from 'node:crypto'
+import { scryptSync, createCipheriv, createDecipheriv, randomBytes } from 'node:crypto'
 
 export interface EncryptedBlob {
     iv: string
