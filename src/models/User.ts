@@ -6,25 +6,21 @@ export class User extends BaseModel {
 
     public readonly username: string
     public readonly salt: string
-    public readonly verifier: string
     public readonly totp: EncryptedBlob
 
     constructor({
         username,
         salt,
-        verifier,
         totp
     }: {
         username: string
         salt: string
-        verifier: string
         totp: EncryptedBlob
     }) {
         super()
 
         this.username = username
         this.salt = salt
-        this.verifier = verifier
         this.totp = totp
     }
 }

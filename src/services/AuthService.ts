@@ -22,7 +22,6 @@ export class AuthService {
         User.create({
             username,
             salt: salt.toString('hex'),
-            verifier: sha256hex(key),
             totp: encrypt(key, secret),
         }).save()
 
