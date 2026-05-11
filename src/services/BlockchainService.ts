@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import { Block } from '~/models/Block'
 import { decrypt, encrypt } from '~/utils/crypto'
 import { Session } from './AuthService'
@@ -34,12 +35,21 @@ export class BlockchainService {
     public static validateChain(newBlock?: Block): { valid: boolean; error?: string } {
         const blocks = newBlock ? [...Block.all(), newBlock] : Block.all()
 
+        let expectedPrev = this.GENESIS_BLOCK_PREV_HASH
+
         for (let i = 0; i < blocks.length; i++) {
             const block = blocks[i]
-            const expectedPrev = i === 0 ? this.GENESIS_BLOCK_PREV_HASH : blocks[i - 1].hash
 
             if (block.hashPrevious !== expectedPrev)
                 return { valid: false, error: `Block ${i}: hashPrevious mismatch` }
+
+            const { hash, ...content } = block
+            const computedHash = createHash('sha256').update(JSON.stringify(content)).digest('hex')
+
+            if (computedHash !== hash)
+                return { valid: false, error: `Block ${i}: hash mismatch (tampered content)` }
+
+            expectedPrev = hash
         }
 
         return { valid: true }
